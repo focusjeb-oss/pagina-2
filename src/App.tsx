@@ -756,6 +756,7 @@ function App() {
                         className="w-full px-4 py-4 bg-navy/5 border border-oro rounded-xl focus:outline-none focus:border-oro/50 focus:ring-1 focus:ring-oro-500/50 transition-all duration-300 text-navy placeholder-navy/30"
                         placeholder="Tu nombre"
                       />
+                      <input type="hidden" name="bot-field" />
                     </div>
 
                     <div>
@@ -769,6 +770,7 @@ function App() {
                         className="w-full px-4 py-4 bg-navy/5 border border-oro rounded-xl focus:outline-none focus:border-oro/50 focus:ring-1 focus:ring-oro-500/50 transition-all duration-300 text-navy placeholder-navy/30"
                         placeholder="tu@email.com"
                       />
+                      <input type="hidden" name="bot-field" />
                     </div>
 
                     <div>
