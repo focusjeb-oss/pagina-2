@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #f5f5dc;
+  color: #2C3E50;
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: rgba(212, 175, 55, 0.3);
+  color: #2C3E50;
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F5F5DC;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(44, 62, 80, 0.5);
+}
+
+/* Smooth image loading */
+img {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+img[loading] {
+  opacity: 0;
+}
+/* ====================== PALETA PERSONALIZADA ====================== */
+:root {
+  --color-crema: #F5F5DC;
+  --color-navy: #2C3E50;
+  --color-oro: #D4AF37;
+}
+
+/* Fondo general y textos */
+body {
+  background-color: var(--color-crema) !important;
+  color: var(--color-navy) !important;
+}
+
+/* Acentos dorados (títulos, botones, etc.) */
+.text-oro { color: var(--color-oro) !important; }
+.bg-oro { background-color: var(--color-oro) !important; }
+.border-oro { border-color: var(--color-oro) !important; }
+
+/* Gradientes dorados */
+.from-oro-to-navy {
+  background: linear-gradient(to right, var(--color-oro), var(--color-navy)) !important;
+}
