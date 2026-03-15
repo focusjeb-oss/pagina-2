@@ -738,6 +738,7 @@ function App() {
                 <form
                 action="https://api.web3forms.com/submit"
                   method="POST"
+                  encType="multipart/form-data"
                 className="p-8 bg-white/5 backdrop-blur-sm rounded-3xl border border-oro">
                  <input type="hidden" name="access_key" value="732ce6fe-2790-45ea-bef1-245ae1e76878" />
                  <input type="hidden" name="redirect" value="https://focus-jeb.netlify.app" />
