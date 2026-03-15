@@ -736,12 +736,11 @@ function App() {
                 }`}
               >
                 <form
-                name="contacto-focusjeb"
+                action="https://api.web3forms.com/submit"
                   method="POST"
-                  data-netlify="true"
-                  data-netlify-honeypot="bot-field"
                 className="p-8 bg-white/5 backdrop-blur-sm rounded-3xl border border-oro">
-                 <input type="hidden" name="form-name" value="contacto-focusjeb" /> 
+                 <input type="hidden" name="access_key" value="732ce6fe-2790-45ea-bef1-245ae1e76878" />
+                 <input type="hidden" name="redirect" value="https://focus-jeb.netlify.app" />
 
                 <input type="hidden" name="bot-field" />
                   <div className="space-y-6">
@@ -751,7 +750,7 @@ function App() {
                       </label>
                       <input
                         type="text"
-                        name= "nombre"
+                        name= "name"
                         required
                         className="w-full px-4 py-4 bg-navy/5 border border-oro rounded-xl focus:outline-none focus:border-oro/50 focus:ring-1 focus:ring-oro-500/50 transition-all duration-300 text-navy placeholder-navy/30"
                         placeholder="Tu nombre"
