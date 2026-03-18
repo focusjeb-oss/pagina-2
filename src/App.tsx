@@ -1,19 +1,15 @@
 import { useState, useEffect } from 'react'
-import { Menu, X, ArrowRight, Mail, MapPin, Instagram, ChevronRight, Sparkles, Layers, Sun } from 'lucide-react'
+import { Menu, X, ArrowRight, Mail, MapPin, Instagram, ChevronRight, Sparkles, Layers, Sun, ShoppingCart } from 'lucide-react'
 import Lightbox from './components/Lightbox'
 
-interface Photo {
-  src: string;
-  title: string;
-  description?: string; 
-}
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('inicio')
   const [scrollY, setScrollY] = useState(0)
   const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set())
-
+  const [showEncargoDrawer, setShowEncargoDrawer] = useState(false);
+  const [selectedImages, setSelectedImages] = useState<Photo[]>([]);
   
   // Estados para el Lightbox
   const [lightboxOpen, setLightboxOpen] = useState(false)
@@ -25,10 +21,22 @@ function App() {
     setCurrentImageIndex(index);
     setLightboxOpen(true);
   };
-    const addFormatToMessage = (format: string) => {
-  setMessage(prev => prev + `\nFormato seleccionado: ${format}`)
 
-  };
+  const addToCart = (photo: Photo) => {
+    setSelectedImages((prev) => {
+      if (prev.some((p) => p.src === photo.src)) return prev;
+      return [...prev, photo];
+    });
+    setShowEncargoDrawer(true);
+    };
+    const removeFromCart = (srcToRemove: string) => {
+      setSelectedImages((prev) => prev.filter((p) => p.src !== srcToRemove));
+      };
+      const clearCart = () => setSelectedImages([]);
+
+    const addFormatToMessage = (format: string) => {
+      setMessage(prev => prev + `\nFormato seleccionado: ${format}`)
+     };
   
   // Array de imágenes para la galería (ACTUALIZA ESTAS URLs CON TUS IMÁGENES REALES)
   const galleryImages = [
@@ -418,16 +426,34 @@ function App() {
               >
                 <div 
                   className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-white/5 border border-oro/40 shadow-[0_0_10px_#D4AF37,0_0_20px_#D4AF37,inset_0_0_10px_#D4AF37] hover:border-oro hover:shadow-[0_0_25px_#D4AF37,0_0_45px_#D4AF37,inset_0_0_20px_#D4AF37] transition-all duration-500 cursor-pointer"
-                  onClick={() => {
-                    setCurrentImageIndex(0)
-                    setLightboxOpen(true)
-                  }}
+                  onClick={() => openGallery(
+                    obras[0].image.map(img => ({
+                    src: img,
+                    title: obras[0].title,
+                    description: `${obras[0].subtitle} - ${obras[0].description}`})) as Photo[],
+                    0
+                  )}
                 >
                   <img
                     src={galleryImages[0].src}
                     alt="Obra fotográfica con luz perimetral"
                     className="w-full h-full object-cover transition-transform duration-700 grayscale group-hover:grayscale-0 group-hover:scale-105"
                   />
+                  <button
+                   onClick={(e) => {
+                    e.stopPropagation(); // evita abrir la galería/lightbox
+                    addToCart({
+                    src: obras[0].image[0],
+                    title: obras[0].title,
+                    description: obras[0].subtitle + " - " + obras[0].description,
+                    });
+                    setShowEncargoDrawer(true);
+                  }}
+                    className="absolute bottom-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-oro/90 text-navy shadow-lg hover:bg-oro hover:scale-110 active:scale-95 transition-all duration-200"
+                    title="Solicitar encargo similar"
+                     >
+                     <ShoppingCart size={18} />
+                   </button>
                 <div className="absolute inset-0 bg-gradient-to-t from-crema via-transparent to-transparent" />
                 <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-3xl" />
                 
@@ -483,7 +509,23 @@ function App() {
                 alt={obra.title}
                 className="w-full h-full object-cover transition-all duration-700 grayscale group-hover:grayscale-0 group-hover:scale-110"
               />
-
+              
+              <button
+                   onClick={(e) => {
+                    e.stopPropagation(); // evita abrir la galería/lightbox
+                    addToCart({
+                    src: obra.image[0],
+                    title: obra.title,
+                    description: obra.subtitle + " - " + obra.description,
+                    });
+                    setShowEncargoDrawer(true);
+                  }}
+                    className="absolute bottom-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-oro/90 text-navy shadow-lg hover:bg-oro hover:scale-110 active:scale-95 transition-all duration-200"
+                    title="Solicitar encargo similar"
+                     >
+                     <ShoppingCart size={18} />
+                   </button>
+               
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
               
               <div className="absolute inset-0 p-6 flex flex-col justify-end">
@@ -535,6 +577,21 @@ function App() {
                   alt={servicio.title}
                   className="w-full h-full object-cover transition-all duration-700 grayscale group-hover:grayscale-0 group-hover:scale-110"
                 />
+                <button
+                   onClick={(e) => {
+                    e.stopPropagation(); // evita abrir la galería/lightbox
+                    addToCart({
+                    src: servicio.image[0],
+                    title: servicio.title,
+                    description: servicio.description,
+                    });
+                    setShowEncargoDrawer(true);
+                  }}
+                    className="absolute bottom-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-oro/90 text-navy shadow-lg hover:bg-oro hover:scale-110 active:scale-95 transition-all duration-200"
+                    title="Solicitar encargo similar"
+                     >
+                     <ShoppingCart size={18} />
+                   </button>
               </div>
               <div className="p-8">
                 <h3 className="text-2xl font-bold mb-4 group-hover:text-navy transition-colors">{servicio.title}</h3>
@@ -579,6 +636,21 @@ function App() {
                 sizes="(max-width: 768px) 100vw, 33vw"
                 className="w-full h-full object-cover transition-all duration-700 grayscale group-hover:grayscale-0 group-hover:scale-110"
               />
+              <button
+                   onClick={(e) => {
+                    e.stopPropagation(); // evita abrir la galería/lightbox
+                    addToCart({
+                    src: encargo.image[0],
+                    title: encargo.title,
+                    description:encargo.description,
+                    });
+                    setShowEncargoDrawer(true);
+                  }}
+                    className="absolute bottom-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-oro/90 text-navy shadow-lg hover:bg-oro hover:scale-110 active:scale-95 transition-all duration-200"
+                    title="Solicitar encargo similar"
+                     >
+                     <ShoppingCart size={18} />
+                   </button>
 
               {/* Número 01, 02, 03 (mantengo tu diseño) */}
               <div className="absolute top-4 left-4 w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-lg font-bold border border-white/20 z-10">
@@ -885,6 +957,151 @@ function App() {
         </div>
       </footer>
 
+{/* Botón flotante carrito */}
+<button
+  onClick={() => setShowEncargoDrawer(true)}
+  className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-gradient-to-r from-oro to-navy text-crema shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300 border-2 border-crema/30"
+>
+  🛒
+</button>
+
+{/* DRAWER QUE SUBE DESDE ABAJO */}
+{showEncargoDrawer && (
+  <>
+    {/* Fondo oscuro */}
+    <div
+      className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+      onClick={() => setShowEncargoDrawer(false)}
+    />
+
+    {/* Drawer */}
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-crema rounded-t-3xl max-h-[92vh] overflow-y-auto border-t-4 border-oro shadow-2xl transition-transform duration-300">
+      
+      {/* Header */}
+      <div className="sticky top-0 bg-crema border-b border-oro/30 px-6 py-5 flex items-center justify-between z-10">
+        <div>
+          <h3 className="text-2xl font-bold text-navy">
+            Solicitar encargo
+          </h3>
+          <p className="text-sm text-navy/60">
+            {selectedImages.length} pieza{selectedImages.length !== 1 ? 's' : ''} seleccionada{selectedImages.length !== 1 ? 's' : ''}
+          </p>
+        </div>
+        <button 
+          onClick={() => {
+            setShowEncargoDrawer(false);
+            // NO limpiamos aquí, solo al cerrar manualmente
+          }}
+          className="text-navy/70 hover:text-navy"
+        >
+          <X size={28} />
+        </button>
+      </div>
+
+      {/* Formulario */}
+      <div className="p-6">
+        <form
+          action="https://api.web3forms.com/submit"
+          method="POST"
+          encType="multipart/form-data"
+          className="space-y-6"
+          onSubmit={() => {
+            // Opcional: limpiar después de enviar (el redirect ya recarga)
+            setTimeout(clearCart, 800);
+          }}
+        >
+          <input type="hidden" name="access_key" value="732ce6fe-2790-45ea-bef1-245ae1e76878" />
+          <input type="hidden" name="redirect" value="https://focus-jeb.netlify.app" />
+          <input type="hidden" name="bot-field" />
+
+          {/* CAMPOS NORMALES */}
+          <div>
+            <label className="block text-sm font-medium text-navy/70 mb-2">Nombre y apellido</label>
+            <input type="text" name="name" required className="w-full px-4 py-4 bg-white border border-oro rounded-xl text-navy" placeholder="Tu nombre" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-navy/70 mb-2">Email</label>
+            <input type="email" name="email" required className="w-full px-4 py-4 bg-white border border-oro rounded-xl text-navy" placeholder="tu@email.com" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-navy/70 mb-2">Tu mensaje / descripción</label>
+            <textarea name="message" rows={5} required className="w-full px-4 py-4 bg-white border border-oro rounded-xl text-navy resize-none" placeholder="Cuéntanos sobre tu proyecto..." />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-navy/70 mb-2">Imágenes de referencia (opcional)</label>
+            <input type="file" name="attachment" accept="image/*" multiple className="w-full px-4 py-3 bg-white border border-oro rounded-xl text-navy file:bg-oro file:text-crema file:font-medium" />
+          </div>
+
+          {/* === SECCIÓN DE IMÁGENES DEL CARRITO === */}
+          {selectedImages.length > 0 && (
+            <div className="rounded-2xl border border-oro/30 bg-white/60 p-6">
+              <p className="mb-4 font-medium text-navy">Piezas seleccionadas:</p>
+              
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-96 overflow-y-auto pr-2">
+                {selectedImages.map((photo, i) => (
+                  <div key={i} className="relative group">
+                    <img
+                      src={photo.src}
+                      alt={photo.title}
+                      className="w-full aspect-[3/4] object-cover rounded-xl shadow-md border border-oro/20"
+                    />
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent h-1/2 rounded-b-xl" />
+                    
+                    <div className="absolute bottom-2 left-2 right-2 text-white text-xs">
+                      <p className="font-semibold line-clamp-1">{photo.title}</p>
+                      <p className="opacity-80 text-[10px] line-clamp-1">{photo.description}</p>
+                    </div>
+
+                    {/* Botón eliminar */}
+                    <button
+                      type="button"
+                      onClick={() => removeFromCart(photo.src)}
+                      className="absolute top-2 right-2 bg-red-500/90 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs hover:bg-red-600 transition"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/* Campo oculto que llega al email (JSON) */}
+              <input
+                type="hidden"
+                name="obras_seleccionadas"
+                value={JSON.stringify(
+                  selectedImages.map((p) => ({
+                    title: p.title,
+                    description: p.description || '',
+                    src: p.src,
+                  }))
+                )}
+              />
+            </div>
+          )}
+
+          {selectedImages.length === 0 && (
+            <div className="text-center py-8 text-navy/50 text-sm">
+              Aún no has seleccionado ninguna pieza.<br />
+              Pulsa el carrito en cualquier obra.
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={selectedImages.length === 0}
+            className="w-full py-4 bg-gradient-to-r from-oro to-navy text-crema font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Enviar solicitud ({selectedImages.length} pieza{selectedImages.length !== 1 ? 's' : ''})
+          </button>
+        </form>
+      </div>
+    </div>
+  </>
+)}
+
       {/* Lightbox Component */}
       {lightboxOpen && activePhotos.length > 0 && (
         <Lightbox
@@ -892,12 +1109,24 @@ function App() {
           currentIndex={currentImageIndex}
           isOpen={lightboxOpen}
           onClose={() => setLightboxOpen(false)}
-        onNext={() => setCurrentImageIndex(prev => Math.min(prev + 1, activePhotos.length - 1))}
-        onPrev={() => setCurrentImageIndex(prev => Math.max(prev - 1, 0))}
+          onNext={() => setCurrentImageIndex(prev => Math.min(prev + 1, activePhotos.length - 1))}
+          onPrev={() => setCurrentImageIndex(prev => Math.max(prev - 1, 0))}
+
+          onAddToCart={(photo) => {
+            addToCart(photo);
+            setShowEncargoDrawer(true);
+        }}
+
       />
       )}
     </div>
   )
+}
+
+export interface Photo {
+  src: string;
+  title: string;
+  description?: string;
 }
 
 export default App

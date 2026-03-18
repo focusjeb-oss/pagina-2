@@ -1,5 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import type { Photo } from '../App';
+import { ShoppingCart } from 'lucide-react';
 
 interface LightboxProps {
   images: { src: string; title: string; description?: string }[];
@@ -8,6 +10,7 @@ interface LightboxProps {
   onClose: () => void;
   onNext: () => void;
   onPrev: () => void;
+  onAddToCart?: (photo: Photo) => void;
 }
 
 export const Lightbox: React.FC<LightboxProps> = ({
@@ -17,6 +20,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
   onClose,
   onNext,
   onPrev,
+  onAddToCart,
 }) => {
   // Navegación con teclado
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -71,6 +75,16 @@ export const Lightbox: React.FC<LightboxProps> = ({
           alt={currentImage.title}
           className="max-w-full max-h-[75vh] object-contain rounded-lg shadow-2xl"
         />
+
+        <button
+         onClick={() => 
+          onAddToCart?.(images[currentIndex])}
+         className="absolute bottom-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-navy text-oro shadow-lg hover:bg-navy/90 hover:scale-110 active:scale-95 transition-all duration-200"
+         title="Agregar esta imagen al encargo"
+      >
+        <ShoppingCart size={22} />
+        </button>
+        
         
         {/* Info de la imagen */}
         <div className="mt-4 text-center text-white">
