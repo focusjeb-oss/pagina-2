@@ -424,32 +424,29 @@ function App() {
   
   
 useEffect(() => {
-  let rafId: number;
-
+  let ticking = false
   const handleScroll = () => {
-    cancelAnimationFrame(rafId);
-    rafId = requestAnimationFrame(() => {
-      setScrollY(window.scrollY);
-      const sections = ['inicio', 'obras', 'fotografia', 'encargos', 'nosotros', 'contacto'];
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 100 && rect.bottom >= 100) {
-            setActiveSection(section);
-            break;
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        setScrollY(window.scrollY)
+        const sections = ['inicio', 'obras', 'fotografia', 'encargos', 'nosotros', 'contacto']
+        sections.forEach(section => {
+          const element = document.getElementById(section)
+          if (element) {
+            const rect = element.getBoundingClientRect()
+            if (rect.top <= 100 && rect.bottom >= 100) {
+              setActiveSection(section)
+            }
           }
-        }
-      }
-    });
-  };
-
-  window.addEventListener('scroll', handleScroll, { passive: true });
-  return () => {
-    cancelAnimationFrame(rafId);
-    window.removeEventListener('scroll', handleScroll);
-  };
-}, []);
+        })
+        ticking = false
+      })
+      ticking = true
+    }
+  }
+  window.addEventListener('scroll', handleScroll, { passive: true })
+  return () => window.removeEventListener('scroll', handleScroll)
+}, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -682,6 +679,8 @@ useEffect(() => {
                   <img
                     src={galleryImages[0].src}
                     alt="Obra fotográfica con luz perimetral"
+                    fetchPriority="high"
+                    decoding="async"
                     className="w-full h-full object-cover transition-transform duration-700  group-hover:grayscale-0 group-hover:scale-105"
                   />
                   <button
@@ -750,6 +749,13 @@ useEffect(() => {
               <img
                 src={obra.image[0]}
                 alt={obra.title}
+                width={400}
+                height={533}
+                loading="lazy"
+                decoding="async"
+                onError={(e) => {
+                e.currentTarget.style.opacity = '0.3'
+                }}
                 className="w-full h-full object-cover transition-all duration-700  group-hover:grayscale-0 group-hover:scale-110"
               />
 
@@ -818,6 +824,13 @@ useEffect(() => {
                 <img
                   src={servicio.image[0]}
                   alt={servicio.title}
+                  width={600}
+                  height={338}
+                  loading="lazy"
+                  decoding="async"
+                  onError={(e) => {
+                  e.currentTarget.style.opacity = '0.3'
+                  }}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <button
@@ -879,6 +892,13 @@ useEffect(() => {
               <img
                 src={encargo.image[0]}
                 alt={encargo.title}
+                width={600}
+                height={450}
+                loading="lazy"
+                decoding="async"
+                onError={(e) => {
+                e.currentTarget.style.opacity = '0.3'
+                }}
                 sizes="(max-width: 768px) 100vw, 33vw"
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
@@ -1244,7 +1264,7 @@ useEffect(() => {
             </p>
 
             <div className="flex items-center gap-4">
-              <a
+              <a 
                 href="https://www.instagram.com/focus_jeb"
                 className="w-10 h-10 rounded-full bg-white/5 border border-navy/10 flex items-center justify-center hover:border-oro/50 hover:text-oro transition-all duration-300"
               >
@@ -1533,6 +1553,7 @@ useEffect(() => {
           onClose={() => setLightboxOpen(false)}
           onNext={() => setCurrentImageIndex(prev => Math.min(prev + 1, activePhotos.length - 1))}
           onPrev={() => setCurrentImageIndex(prev => Math.max(prev - 1, 0))}
+          onGoTo={(index) => setCurrentImageIndex(index)}
 
           onAddToCart={(photo) => {
             addToCart(photo);

@@ -10,6 +10,7 @@ interface LightboxProps {
   onClose: () => void;
   onNext: () => void;
   onPrev: () => void;
+  onGoTo: (index: number) => void;
   onAddToCart?: (photo: Photo) => void;
 }
 
@@ -20,6 +21,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
   onClose,
   onNext,
   onPrev,
+  onGoTo,
   onAddToCart,
 }) => {
   // Navegación con teclado
@@ -109,13 +111,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
         {images.map((img, idx) => (
           <button
             key={idx}
-            onClick={() => {
-              if (idx < currentIndex) {
-                for (let i = currentIndex; i > idx; i--) onPrev();
-              } else if (idx > currentIndex) {
-                for (let i = currentIndex; i < idx; i++) onNext();
-              }
-            }}
+            onClick={() => onGoTo(idx)}
             className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
               idx === currentIndex ? 'border-cyan-400 opacity-100' : 'border-transparent opacity-50 hover:opacity-80'
             }`}
