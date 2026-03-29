@@ -79,7 +79,7 @@ export const Lightbox: React.FC<LightboxProps> = ({
         <button
          onClick={() => 
           onAddToCart?.(images[currentIndex])}
-         className="absolute bottom-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-navy text-oro shadow-lg hover:bg-navy/90 hover:scale-110 active:scale-95 transition-all duration-200"
+         className="absolute bottom-30 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-navy text-oro shadow-lg hover:bg-navy/90 hover:scale-110 active:scale-95 transition-all duration-200"
          title="Agregar esta imagen al encargo"
       >
         <ShoppingCart size={22} />
