@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
+    "@netlify/functions": "^5.1.5",
     "@stripe/react-stripe-js": "^6.1.0",
     "@stripe/stripe-js": "^9.0.1",
     "clsx": "2.1.1",
@@ -21,7 +22,7 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.1.17",
-    "@types/node": "^22.0.0",
+    "@types/node": "^22.19.15",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.1.1",

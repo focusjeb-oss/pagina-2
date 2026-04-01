@@ -1,12 +1,10 @@
 import Stripe from 'stripe'
-import type { Handler } from '@netlify/functions'
+import type { Handler, HandlerEvent } from '@netlify/functions'
 
 // Línea 4: secret key solo en servidor — nunca en el frontend
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20',
-})
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
-export const handler: Handler = async (event) => {
+export const handler: Handler = async (event: HandlerEvent) => {
   // Línea 10: solo aceptamos POST
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' }
