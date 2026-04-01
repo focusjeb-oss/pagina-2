@@ -1,12 +1,12 @@
+
 import { useState, useEffect, useCallback, memo } from 'react'
-import {
-  Menu, X, ArrowRight, Mail, MapPin, Instagram, ChevronRight,
-  Sparkles, Layers, Sun, ShoppingCart, Ruler, CheckCircle, Info,
-  Shield, Package, Truck, CreditCard, Loader2, AlertCircle
-} from 'lucide-react'
+import {Menu, X, ArrowRight, Mail, MapPin, Instagram, ChevronRight, Sparkles, Layers, Sun, ShoppingCart, Ruler, CheckCircle, Info, Shield, Package, Truck, CreditCard, Loader2, AlertCircle} from 'lucide-react'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import Lightbox from './components/Lightbox'
+import GrillaProductos from './components/GrillaProductos'
+import ProductoDetalle from './components/ProductoDetalle'
+import type { ProductoItem } from './components/ProductoDetalle'
 
 // ── Stripe: inicializar UNA sola vez fuera del componente ────────────────────
 // MOTIVO: Si se pusiera dentro de App(), se recrearía en cada render.
@@ -574,6 +574,9 @@ function App() {
   // formData persiste los datos del paso 2 para usarlos en el pago
   const [formData, setFormData] = useState<FormularioDatos | null>(null)
 
+  // ── Detalle de producto (modal tipo tienda) ───────────────────────────────
+  const [productoDetalle, setProductoDetalle] = useState<ProductoItem | null>(null)
+
   // ── Lightbox ──────────────────────────────────────────────────────────────
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -923,198 +926,62 @@ function App() {
       </section>
 
       {/* Obras Section */}
-      <section id="obras" className="relative py-32">
+      <section id="obras" className="relative py-24">
         <div className="w-full px-6 lg:px-12">
           <div className="max-w-7xl mx-auto">
-            <div className={`text-center max-w-3xl mx-auto mb-16 transition-opacity duration-600 ${visibleSections.has('obras') ? 'opacity-100' : 'opacity-0'}`}>
+            <div className={`text-center max-w-3xl mx-auto mb-12 transition-opacity duration-600 ${visibleSections.has('obras') ? 'opacity-100' : 'opacity-0'}`}>
               <span className="inline-block px-4 py-2 rounded-full bg-oro/10 border border-oro text-navy text-xs font-semibold mb-6 tracking-widest uppercase">Colección</span>
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Obras</h2>
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Obras</h2>
               <p className="text-xl text-navy/50 leading-relaxed">Cada obra es una pieza única. No reproducimos imágenes en serie.</p>
             </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {obras.map((obra, index) => (
-                <div
-                  key={obra.id}
-                  className={`group transition-opacity duration-500 ${visibleSections.has('obras') ? 'opacity-100' : 'opacity-0'}`}
-                  style={{ transitionDelay: `${index * 80}ms` }}
-                >
-                  <div
-                    className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-white/5 border border-oro/40 shadow-[0_0_10px_#D4AF37,0_0_20px_#D4AF37,inset_0_0_10px_#D4AF37] hover:border-oro hover:shadow-[0_0_25px_#D4AF37,0_0_45px_#D4AF37,inset_0_0_20px_#D4AF37] transition-[box-shadow,border-color] duration-300 cursor-pointer"
-                    onClick={() => openGallery(
-                      obra.image.map(src => ({ src, title: obra.title })) as Photo[],
-                      0
-                    )}
-                  >
-                    <img
-                      src={obra.image[0]}
-                      alt={obra.title}
-                      width={400}
-                      height={533}
-                      loading="lazy"
-                      decoding="async"
-                      onError={(e) => { e.currentTarget.style.opacity = '0.3' }}
-                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
-                    />
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        addToCart({
-                          src: obra.image[0],
-                          title: obra.title,
-                          description: obra.subtitle + ' - ' + obra.description,
-                        })
-                      }}
-                      className="absolute bottom-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-oro/90 text-navy shadow-lg hover:bg-oro hover:scale-110 active:scale-95 transition-all duration-200"
-                      title="Solicitar encargo similar"
-                    >
-                      <ShoppingCart size={18} />
-                    </button>
-                    <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-oro/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                      <ArrowRight className="w-5 h-5" />
-                    </div>
-                  </div>
-                  <div className="pt-4 px-1">
-                    <h3 className="text-lg font-bold text-navy mb-1">{obra.title}</h3>
-                    <p className="text-oro text-sm font-medium mb-1">{obra.subtitle}</p>
-                    <p className="text-navy/50 text-sm mb-3">{obra.description}</p>
-                    <div className="flex justify-between items-baseline">
-                      <span className="text-sm text-navy/40">Desde</span>
-                      <span className="text-xl font-bold text-navy">{obra.prices.L} €</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <GrillaProductos
+              items={obras.map(o => ({ ...o, categoria: 'Obras' }))}
+              cols={4}
+              isVisible={visibleSections.has('obras')}
+              onVerDetalle={item => setProductoDetalle(item)}
+              onAddToCart={addToCart}
+            />
           </div>
         </div>
       </section>
 
       {/* Fotografía Section */}
-      <section id="fotografia" className="relative py-32 bg-crema">
+      <section id="fotografia" className="relative py-24 bg-crema">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-oro-500/5 to-transparent" />
         <div className="relative w-full px-6 lg:px-12">
           <div className="max-w-7xl mx-auto">
-            <div className={`max-w-3xl mb-16 transition-opacity duration-600 ${visibleSections.has('fotografia') ? 'opacity-100' : 'opacity-0'}`}>
+            <div className={`max-w-3xl mb-12 transition-opacity duration-600 ${visibleSections.has('fotografia') ? 'opacity-100' : 'opacity-0'}`}>
               <span className="inline-block px-4 py-2 rounded-full bg-oro/10 border border-oro text-navy text-xs font-semibold mb-6 tracking-widest uppercase">Servicios</span>
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Fotografía</h2>
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Fotografía</h2>
               <p className="text-xl text-navy/50 leading-relaxed">La fotografía es el punto de partida de nuestro trabajo.</p>
             </div>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {servicios.map((servicio, index) => (
-                <div
-                  key={index}
-                  className={`group transition-opacity duration-500 ${visibleSections.has('fotografia') ? 'opacity-100' : 'opacity-0'}`}
-                  style={{ transitionDelay: `${index * 100}ms` }}
-                  onClick={() => openGallery(
-                    servicio.image.map(src => ({ src, title: servicio.title })) as Photo[],
-                    0
-                  )}
-                >
-                  <div className="relative bg-white/5 rounded-3xl overflow-hidden border border-oro/40 shadow-[0_0_10px_#D4AF37,0_0_20px_#D4AF37,inset_0_0_10px_#D4AF37] hover:border-oro hover:shadow-[0_0_25px_#D4AF37,0_0_45px_#D4AF37,inset_0_0_20px_#D4AF37] transition-[box-shadow,border-color] duration-300 cursor-pointer">
-                    <div className="aspect-video overflow-hidden">
-                      <img
-                        src={servicio.image[0]}
-                        alt={servicio.title}
-                        width={600}
-                        height={338}
-                        loading="lazy"
-                        decoding="async"
-                        onError={(e) => { e.currentTarget.style.opacity = '0.3' }}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          addToCart({
-                            src: servicio.image[0],
-                            title: servicio.title,
-                            description: servicio.description,
-                          })
-                        }}
-                        className="absolute bottom-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-oro/90 text-navy shadow-lg hover:bg-oro hover:scale-110 active:scale-95 transition-all duration-200"
-                        title="Solicitar encargo similar"
-                      >
-                        <ShoppingCart size={18} />
-                      </button>
-                    </div>
-                    <div className="p-8">
-                      <h3 className="text-2xl font-bold mb-4 group-hover:text-navy transition-colors">{servicio.title}</h3>
-                      <p className="text-navy/50 leading-relaxed">{servicio.description}</p>
-                      <div className="mt-4 flex justify-between items-baseline">
-                        <span className="text-sm text-navy/60">Desde</span>
-                        <span className="text-2xl font-bold text-navy">{servicio.prices.L} €</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <GrillaProductos
+              items={servicios.map(s => ({ ...s, categoria: 'Fotografía' }))}
+              cols={3}
+              isVisible={visibleSections.has('fotografia')}
+              onVerDetalle={item => setProductoDetalle(item)}
+              onAddToCart={addToCart}
+            />
           </div>
         </div>
       </section>
 
       {/* Encargos Section */}
-      <section id="encargos" className="relative py-32">
+      <section id="encargos" className="relative py-24">
         <div className="w-full px-6 lg:px-12">
           <div className="max-w-7xl mx-auto">
-            <div className={`text-center max-w-3xl mx-auto mb-16 transition-opacity duration-600 ${visibleSections.has('encargos') ? 'opacity-100' : 'opacity-0'}`}>
+            <div className={`text-center max-w-3xl mx-auto mb-12 transition-opacity duration-600 ${visibleSections.has('encargos') ? 'opacity-100' : 'opacity-0'}`}>
               <span className="inline-block px-4 py-2 rounded-full bg-oro/10 border border-oro text-navy text-xs font-semibold mb-6 tracking-widest uppercase">Trabajos a medida</span>
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Encargos</h2>
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>Encargos</h2>
               <p className="text-xl text-navy/50 leading-relaxed">Los encargos se realizan de forma limitada...</p>
             </div>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {encargos.map((encargo, index) => (
-                <div
-                  key={index}
-                  className={`group transition-all duration-700 ${visibleSections.has('encargos') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
-                  style={{ transitionDelay: `${index * 150}ms` }}
-                  onClick={() => openGallery(
-                    encargo.image.map(src => ({ src, title: encargo.title })) as Photo[],
-                    0
-                  )}
-                >
-                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-6 border border-oro/40 shadow-[0_0_10px_#D4AF37,0_0_20px_#D4AF37,inset_0_0_10px_#D4AF37] hover:border-oro hover:shadow-[0_0_25px_#D4AF37,0_0_45px_#D4AF37,inset_0_0_20px_#D4AF37] transition-[box-shadow,border-color] duration-300 cursor-pointer">
-                    <img
-                      src={encargo.image[0]}
-                      alt={encargo.title}
-                      width={600}
-                      height={450}
-                      loading="lazy"
-                      decoding="async"
-                      onError={(e) => { e.currentTarget.style.opacity = '0.3' }}
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        addToCart({
-                          src: encargo.image[0],
-                          title: encargo.title,
-                          description: encargo.description,
-                        })
-                      }}
-                      className="absolute bottom-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-oro/90 text-navy shadow-lg hover:bg-oro hover:scale-110 active:scale-95 transition-all duration-200"
-                      title="Solicitar encargo similar"
-                    >
-                      <ShoppingCart size={18} />
-                    </button>
-                    <div className="absolute top-4 left-4 w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-lg font-bold border border-white/20 z-10">
-                      0{index + 1}
-                    </div>
-                  </div>
-                  <h3 className="text-2xl font-bold mb-3 group-hover:text-navy transition-colors">{encargo.title}</h3>
-                  <p className="text-navy/50 leading-relaxed">{encargo.description}</p>
-                  <div className="mt-4 flex justify-between items-baseline">
-                    <span className="text-sm text-navy/60">Desde</span>
-                    <span className="text-2xl font-bold text-navy">{encargo.prices.L} €</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <GrillaProductos
+              items={encargos.map((e, idx) => ({ ...e, id: idx, categoria: 'Encargos' }))}
+              cols={3}
+              isVisible={visibleSections.has('encargos')}
+              onVerDetalle={item => setProductoDetalle(item)}
+              onAddToCart={addToCart}
+            />
           </div>
         </div>
       </section>
@@ -1723,6 +1590,20 @@ function App() {
             </div>
           </div>
         </>
+      )}
+
+      {/* Modal detalle de producto */}
+      {productoDetalle && (
+        <ProductoDetalle
+          producto={productoDetalle}
+          onClose={() => setProductoDetalle(null)}
+          onAddToCart={addToCart}
+          onSolicitarEncargo={() => {
+            setProductoDetalle(null)
+            setShowEncargoDrawer(true)
+            setDrawerStep('resumen')
+          }}
+        />
       )}
 
       {/* Lightbox */}
