@@ -260,13 +260,13 @@ const encargos = [
 ]
 
 const formatosEstandar = [
-  { key: 'XS', label: 'XS', dims: '50×30 cm', ancho: 50, alto: 30, precio: 1250, descripcion: 'Pieza íntima, ideal para espacios reducidos o colecciones.' },
-  { key: 'S',  label: 'S',  dims: '60×40 cm', ancho: 60, alto: 40, precio: 1650, descripcion: 'Equilibrio entre presencia y discreción.' },
-  { key: 'M',  label: 'M',  dims: '80×60 cm', ancho: 80, alto: 60, precio: 2250, descripcion: 'El formato más versátil. Impacto en cualquier espacio.' },
-  { key: 'L',  label: 'L',  dims: '100×70 cm', ancho: 100, alto: 70, precio: 2850, descripcion: 'Presencia máxima. Pensado para paredes protagonistas.' },
+  { key: 'XS', label: 'XS', dims: '50×30 cm', ancho: 50, alto: 30, precio5mm: 164.98, precio10mm: 181.92, descripcion: 'Pieza íntima, ideal para espacios reducidos o colecciones.' },
+  { key: 'S',  label: 'S',  dims: '60×40 cm', ancho: 60, alto: 40, precio5mm: 187.82, precio10mm: 219.28, descripcion: 'Equilibrio entre presencia y discreción.' },
+  { key: 'M',  label: 'M',  dims: '80×60 cm', ancho: 80, alto: 60, precio5mm: 226.70, precio10mm: 255.74, descripcion: 'El formato más versátil. Impacto en cualquier espacio.' },
+  { key: 'L',  label: 'L',  dims: '100×70 cm', ancho: 100, alto: 70, precio5mm: 252.94, precio10mm: 298.92, descripcion: 'Presencia máxima. Pensado para paredes protagonistas.' },
 ]
 
-function calcularPrecioPersonalizado(anchoCm: number, altoCm: number): number {
+function calcularPrecioPersonalizado(anchoCm: number, altoCm: number, grosor: '5mm' | '10mm' = '5mm'): number {
   const areaCm2 = anchoCm * altoCm
   let precioPorCm2: number
   if (areaCm2 <= 1500)      precioPorCm2 = 0.85
@@ -274,7 +274,8 @@ function calcularPrecioPersonalizado(anchoCm: number, altoCm: number): number {
   else if (areaCm2 <= 4800) precioPorCm2 = 0.55
   else if (areaCm2 <= 7000) precioPorCm2 = 0.407
   else                       precioPorCm2 = 0.32
-  return Math.round(areaCm2 * precioPorCm2)
+  const base = Math.round(areaCm2 * precioPorCm2)
+  return grosor === '10mm' ? Math.round(base * (298.92 / 252.94)) : base
 }
 
 // ─── CONFIGURADOR DE PRECIOS ──────────────────────────────────────────────────
@@ -282,30 +283,66 @@ function calcularPrecioPersonalizado(anchoCm: number, altoCm: number): number {
 // que estaba en la línea 166 del original dentro de este componente.
 // MOTIVO: encargoEnviado es estado del flujo de pago global (App). Este componente
 // nunca lo usaba — era código muerto que generaba confusión.
-const ConfiguradorPrecios = memo(({ onFormatoSelect }: { onFormatoSelect: (fmt: string, precio: number) => void }) => {
+const ConfiguradorPrecios = memo(({
+  onFormatoSelect,
+  initialFormato,
+  initialGrosor,
+}: {
+  onFormatoSelect: (fmt: string, precio: number) => void
+  initialFormato?: string | null
+  initialGrosor?: '5mm' | '10mm' | null
+}) => {
   const [modoConfig, setModoConfig] = useState<'estandar' | 'personalizado'>('estandar')
-  const [formatoActivo, setFormatoActivo] = useState<string | null>(null)
+  const [formatoActivo, setFormatoActivo] = useState<string | null>(() => {
+    if (!initialFormato) return null
+    const match = initialFormato.match(/Formato\s+(XS|S|M|L)/)
+    return match ? match[1] : null
+  })
+  const [grosorActivo, setGrosorActivo] = useState<'5mm' | '10mm' | null>(initialGrosor ?? null)
   const [anchoCm, setAnchoCm] = useState<number>(80)
   const [altoCm, setAltoCm] = useState<number>(60)
   const [precioPersonalizado, setPrecioPersonalizado] = useState<number>(0)
   const [mostrarDesglose, setMostrarDesglose] = useState(false)
-  // ← ELIMINADO: const [encargoEnviado, setEncargoEnviado] = useState(false)
+
+  useEffect(() => {
+    if (!initialFormato) return
+    const match = initialFormato.match(/Formato\s+(XS|S|M|L)/)
+    if (match) setFormatoActivo(match[1])
+  }, [initialFormato])
+
+  useEffect(() => {
+    if (initialGrosor) setGrosorActivo(initialGrosor)
+  }, [initialGrosor])
 
   useEffect(() => {
     if (modoConfig === 'personalizado') {
-      setPrecioPersonalizado(calcularPrecioPersonalizado(anchoCm, altoCm))
+      setPrecioPersonalizado(calcularPrecioPersonalizado(anchoCm, altoCm, grosorActivo ?? '5mm'))
     }
-  }, [anchoCm, altoCm, modoConfig])
+  }, [anchoCm, altoCm, modoConfig, grosorActivo])
+
+  // Cuando cambia grosor y ya hay formato activo, recalcular precio
+  useEffect(() => {
+    if (!formatoActivo || !grosorActivo || modoConfig !== 'estandar') return
+    const fmt = formatosEstandar.find(f => f.key === formatoActivo)
+    if (!fmt) return
+    const precio = grosorActivo === '5mm' ? fmt.precio5mm : fmt.precio10mm
+    onFormatoSelect(`Formato ${fmt.label} - ${fmt.dims} · Soporte ${grosorActivo}`, precio)
+  }, [grosorActivo, formatoActivo, modoConfig, onFormatoSelect])
 
   const handleFormatoEstandar = useCallback((fmt: typeof formatosEstandar[0]) => {
     setFormatoActivo(fmt.key)
-    onFormatoSelect(`${fmt.label} - ${fmt.dims}`, fmt.precio)
-  }, [onFormatoSelect])
+    const precio = (grosorActivo ?? '5mm') === '5mm' ? fmt.precio5mm : fmt.precio10mm
+    onFormatoSelect(`Formato ${fmt.label} - ${fmt.dims} · Soporte ${grosorActivo ?? '5mm'}`, precio)
+  }, [onFormatoSelect, grosorActivo])
+
+  const handleGrosor = useCallback((g: '5mm' | '10mm') => {
+    setGrosorActivo(g)
+  }, [])
 
   const handlePersonalizado = useCallback(() => {
-    const label = `Personalizado - ${anchoCm}×${altoCm} cm`
+    const label = `Personalizado - ${anchoCm}×${altoCm} cm · Soporte ${grosorActivo ?? '5mm'}`
     onFormatoSelect(label, precioPersonalizado)
-  }, [anchoCm, altoCm, precioPersonalizado, onFormatoSelect])
+  }, [anchoCm, altoCm, precioPersonalizado, onFormatoSelect, grosorActivo])
 
   const areaCm2 = anchoCm * altoCm
   const areaM2 = (areaCm2 / 10000).toFixed(4)
@@ -317,10 +354,63 @@ const ConfiguradorPrecios = memo(({ onFormatoSelect }: { onFormatoSelect: (fmt: 
           <Ruler className="w-4 h-4 text-oro" />
           <span className="text-sm font-semibold text-navy tracking-wider uppercase">Configurador de formato</span>
         </div>
-        <p className="text-xs text-navy/50">Selecciona un tamaño estándar o introduce tus medidas personalizadas</p>
+        <p className="text-xs text-navy/50">Selecciona grosor, tamaño estándar o introduce tus medidas personalizadas</p>
+        {initialFormato && formatoActivo && (
+          <p className="text-xs text-oro font-medium mt-1 flex items-center gap-1.5">
+            <CheckCircle className="w-3.5 h-3.5" />
+            Configuración traída desde la ficha: <strong>{formatoActivo} · {grosorActivo ?? '–'}</strong>
+          </p>
+        )}
       </div>
 
-      <div className="flex border-b border-oro/20">
+      {/* ── SELECTOR DE GROSOR ── */}
+      <div className="px-5 pt-5 pb-3">
+        <p className="text-xs font-semibold text-navy/60 tracking-widest uppercase mb-3 flex items-center gap-2">
+          <Layers className="w-3.5 h-3.5 text-oro" />
+          Soporte — Grosor del material
+        </p>
+        <div className="grid grid-cols-2 gap-3">
+          {([
+            { key: '5mm' as const, label: 'PVC 5 mm', sublabel: 'Ligero · Perfil fino', desc: 'Énfasis en la imagen. Ideal para formatos XS y S.', precio: '164,98 – 252,94 €' },
+            { key: '10mm' as const, label: 'PVC 10 mm', sublabel: 'Masa · Profundidad', desc: 'Mayor cimiento visual. Recomendado para M y L.', precio: '181,92 – 298,92 €' },
+          ] as const).map(g => {
+            const activo = grosorActivo === g.key
+            return (
+              <button
+                key={g.key}
+                type="button"
+                onClick={() => handleGrosor(g.key)}
+                className={`p-4 rounded-xl border-2 text-left transition-all duration-200 group ${
+                  activo
+                    ? 'border-oro bg-oro/10 shadow-[0_0_12px_#D4AF3740]'
+                    : 'border-oro/20 hover:border-oro/50 hover:bg-oro/5'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`rounded-sm border-2 transition-colors flex-shrink-0 ${activo ? 'border-oro bg-oro/20' : 'border-navy/30 group-hover:border-oro/50'}`}
+                      style={{ width: g.key === '10mm' ? '12px' : '6px', height: '32px' }}
+                    />
+                    <div>
+                      <span className={`block text-sm font-bold leading-tight ${activo ? 'text-navy' : 'text-navy/80'}`}>{g.label}</span>
+                      <span className={`block text-[10px] font-semibold tracking-wider uppercase ${activo ? 'text-oro' : 'text-navy/40'}`}>{g.sublabel}</span>
+                    </div>
+                  </div>
+                  {activo && <CheckCircle className="w-4 h-4 text-oro flex-shrink-0" />}
+                </div>
+                <p className={`text-xs leading-relaxed ${activo ? 'text-navy/70' : 'text-navy/40'}`}>{g.desc}</p>
+                <p className={`text-xs font-semibold mt-2 ${activo ? 'text-navy' : 'text-navy/50'}`}>{g.precio}</p>
+              </button>
+            )
+          })}
+        </div>
+        {!grosorActivo && (
+          <p className="text-[11px] text-amber-600 mt-2 text-center">Selecciona el grosor del soporte para ver los precios exactos</p>
+        )}
+      </div>
+
+      <div className="flex border-b border-t border-oro/20 mt-3">
         <button
           type="button"
           onClick={() => setModoConfig('estandar')}
@@ -340,52 +430,70 @@ const ConfiguradorPrecios = memo(({ onFormatoSelect }: { onFormatoSelect: (fmt: 
       <div className="p-5">
         {modoConfig === 'estandar' ? (
           <div className="space-y-3">
-            {formatosEstandar.map((fmt) => (
-              <button
-                key={fmt.key}
-                type="button"
-                onClick={() => handleFormatoEstandar(fmt)}
-                className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all duration-200 text-left group ${
-                  formatoActivo === fmt.key
-                    ? 'border-oro bg-oro/10 shadow-[0_0_12px_#D4AF3740]'
-                    : 'border-oro/20 hover:border-oro/60 hover:bg-oro/5'
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="flex items-end justify-center w-10 h-10 flex-shrink-0">
-                    <div
-                      className={`border-2 ${formatoActivo === fmt.key ? 'border-oro bg-oro/20' : 'border-navy/30 group-hover:border-oro/50'} transition-colors rounded-sm`}
-                      style={{
-                        width: `${(fmt.ancho / 100) * 32}px`,
-                        height: `${(fmt.alto / 70) * 28}px`,
-                        minWidth: '12px',
-                        minHeight: '10px',
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className={`text-sm font-bold ${formatoActivo === fmt.key ? 'text-navy' : 'text-navy/80'}`}>
-                        Formato {fmt.label}
-                      </span>
-                      <span className="text-xs text-navy/40 font-mono">{fmt.dims}</span>
+            {formatosEstandar.map((fmt) => {
+              const precioMostrar = grosorActivo
+                ? (grosorActivo === '5mm' ? fmt.precio5mm : fmt.precio10mm)
+                : fmt.precio5mm
+              return (
+                <button
+                  key={fmt.key}
+                  type="button"
+                  onClick={() => handleFormatoEstandar(fmt)}
+                  className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all duration-200 text-left group ${
+                    formatoActivo === fmt.key
+                      ? 'border-oro bg-oro/10 shadow-[0_0_12px_#D4AF3740]'
+                      : 'border-oro/20 hover:border-oro/60 hover:bg-oro/5'
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-end justify-center w-10 h-10 flex-shrink-0">
+                      <div
+                        className={`border-2 ${formatoActivo === fmt.key ? 'border-oro bg-oro/20' : 'border-navy/30 group-hover:border-oro/50'} transition-colors rounded-sm`}
+                        style={{
+                          width: `${(fmt.ancho / 100) * 32}px`,
+                          height: `${(fmt.alto / 70) * 28}px`,
+                          minWidth: '12px',
+                          minHeight: '10px',
+                        }}
+                      />
                     </div>
-                    <p className="text-xs text-navy/50 mt-0.5 max-w-[220px]">{fmt.descripcion}</p>
-                  </div>
-                </div>
-                <div className="text-right flex-shrink-0">
-                  <div className={`text-xl font-bold ${formatoActivo === fmt.key ? 'text-navy' : 'text-navy/70'}`}>
-                    {fmt.precio.toLocaleString('es-ES')} €
-                  </div>
-                  {formatoActivo === fmt.key && (
-                    <div className="flex items-center gap-1 justify-end mt-1">
-                      <CheckCircle className="w-3 h-3 text-oro" />
-                      <span className="text-xs text-oro">Seleccionado</span>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-sm font-bold ${formatoActivo === fmt.key ? 'text-navy' : 'text-navy/80'}`}>
+                          Formato {fmt.label}
+                        </span>
+                        <span className="text-xs text-navy/40 font-mono">{fmt.dims}</span>
+                      </div>
+                      <p className="text-xs text-navy/50 mt-0.5 max-w-[220px]">{fmt.descripcion}</p>
+                      {grosorActivo && (
+                        <div className="flex gap-2 mt-1">
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full border ${grosorActivo === '5mm' ? 'bg-oro/20 border-oro text-navy font-semibold' : 'border-navy/20 text-navy/40'}`}>
+                            5mm {fmt.precio5mm.toLocaleString('es-ES', { minimumFractionDigits: 2 })} €
+                          </span>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full border ${grosorActivo === '10mm' ? 'bg-oro/20 border-oro text-navy font-semibold' : 'border-navy/20 text-navy/40'}`}>
+                            10mm {fmt.precio10mm.toLocaleString('es-ES', { minimumFractionDigits: 2 })} €
+                          </span>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              </button>
-            ))}
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <div className={`text-xl font-bold ${formatoActivo === fmt.key ? 'text-navy' : 'text-navy/70'}`}>
+                      {precioMostrar.toLocaleString('es-ES', { minimumFractionDigits: 2 })} €
+                    </div>
+                    {!grosorActivo && (
+                      <span className="text-[10px] text-navy/30">desde</span>
+                    )}
+                    {formatoActivo === fmt.key && (
+                      <div className="flex items-center gap-1 justify-end mt-1">
+                        <CheckCircle className="w-3 h-3 text-oro" />
+                        <span className="text-xs text-oro">Seleccionado</span>
+                      </div>
+                    )}
+                  </div>
+                </button>
+              )
+            })}
           </div>
         ) : (
           <div className="space-y-5">
@@ -449,7 +557,7 @@ const ConfiguradorPrecios = memo(({ onFormatoSelect }: { onFormatoSelect: (fmt: 
             <div className="rounded-xl border border-oro/20 overflow-hidden">
               <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-oro/5 transition" onClick={() => setMostrarDesglose(!mostrarDesglose)}>
                 <div>
-                  <span className="text-xs text-navy/50 block mb-0.5">Superficie: {areaCm2.toLocaleString('es-ES')} cm² ({areaM2} m²)</span>
+                  <span className="text-xs text-navy/50 block mb-0.5">Superficie: {areaCm2.toLocaleString('es-ES')} cm² ({areaM2} m²) · Soporte {grosorActivo ?? '5mm'}</span>
                   <span className="text-2xl font-bold text-navy">{precioPersonalizado.toLocaleString('es-ES')} €</span>
                   <span className="text-xs text-navy/40 ml-2">IVA incluido</span>
                 </div>
@@ -667,6 +775,7 @@ function App() {
   const [selectedImages, setSelectedImages] = useState<Photo[]>([])
   const [selectedFormat, setSelectedFormat] = useState<string | null>(null)
   const [selectedFormatPrice, setSelectedFormatPrice] = useState<number>(0)
+  const [selectedGrosor, setSelectedGrosor] = useState<'5mm' | '10mm' | null>(null)
   const [totalPrice, setTotalPrice] = useState(0)
   const [drawerStep, setDrawerStep] = useState<DrawerStep>('resumen')
   const [hasUploadedFile, setHasUploadedFile] = useState(false)
@@ -713,6 +822,15 @@ function App() {
     setSelectedFormat(fmt)
     setSelectedFormatPrice(precio)
   }, [])
+
+  const handleFormatoYGrosorDesdeDetalle = useCallback(
+    (formato: string, precio: number, grosor: string) => {
+      setSelectedFormat(formato)
+      setSelectedFormatPrice(precio)
+      setSelectedGrosor(grosor as '5mm' | '10mm')
+    },
+    []
+  )
 
   // CAMBIO 7: Nuevo callback. Puente entre paso 'datos' y paso 'pago'.
   // Llama a la Netlify Function con el importe en céntimos,
@@ -1403,7 +1521,11 @@ function App() {
                     </div>
                   )}
 
-                  <ConfiguradorPrecios onFormatoSelect={handleFormatoSelect} />
+                  <ConfiguradorPrecios
+                    onFormatoSelect={handleFormatoSelect}
+                    initialFormato={selectedFormat}
+                    initialGrosor={selectedGrosor}
+                  />
 
                   {selectedFormat && cartCount > 0 && (
                     <div className="rounded-2xl border border-oro/30 bg-gradient-to-r from-navy/5 to-oro/5 p-5">
@@ -1708,6 +1830,7 @@ function App() {
             setShowEncargoDrawer(true)
             setDrawerStep('resumen')
           }}
+          onFormatoYGrosorSelect={handleFormatoYGrosorDesdeDetalle}
         />
       )}
 
