@@ -141,7 +141,7 @@ const encargos = [
       '/images/3encargos/sesionFOCUSJEB/2.webp',
       '/images/3encargos/sesionFOCUSJEB/3.webp'
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 } 
   },
   {
     title: 'Obra personalizada',
