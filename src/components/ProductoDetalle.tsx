@@ -289,13 +289,6 @@ export default function ProductoDetalle({
               </button>
             </div>
 
-            {/* Aviso medidas personalizadas */}
-            <div className="p-4 rounded-xl bg-amber-50 border border-amber-200">
-              <p className="text-sm text-amber-800 font-semibold mb-1">¿No encuentras tu tamaño ideal?</p>
-              <p className="text-xs text-amber-700 leading-relaxed">
-                Introduce tus medidas exactas en el configurador de encargo. El precio se calcula automáticamente.
-              </p>
-            </div>
 
             {/* Garantías */}
             <div className="grid grid-cols-3 gap-3">

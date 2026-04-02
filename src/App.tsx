@@ -88,6 +88,54 @@ const obras = [
     ],
     prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
   },
+  {
+    id: 5,
+    title: 'LÍMITE 03',
+    subtitle: 'Formato L - Pieza única',
+    description: 'Pieza única',
+    image: [
+      '/images/1obras/limite03/1.webp',
+      '/images/1obras/limite03/2.webp',
+      '/images/1obras/limite03/3.webp'
+    ],
+    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+  },
+  {
+    id: 6,
+    title: 'LÍMITE 03',
+    subtitle: 'Formato L - Pieza única',
+    description: 'Pieza única',
+    image: [
+      '/images/1obras/limite03/1.webp',
+      '/images/1obras/limite03/2.webp',
+      '/images/1obras/limite03/3.webp'
+    ],
+    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+  },
+  {
+    id: 7,
+    title: 'LÍMITE 03',
+    subtitle: 'Formato L - Pieza única',
+    description: 'Pieza única',
+    image: [
+      '/images/1obras/limite03/1.webp',
+      '/images/1obras/limite03/2.webp',
+      '/images/1obras/limite03/3.webp'
+    ],
+    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+  },
+  {
+    id: 8,
+    title: 'LÍMITE 03',
+    subtitle: 'Formato L - Pieza única',
+    description: 'Pieza única',
+    image: [
+      '/images/1obras/limite03/1.webp',
+      '/images/1obras/limite03/2.webp',
+      '/images/1obras/limite03/3.webp'
+    ],
+    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+  },
 ]
 
 const servicios = [
@@ -121,6 +169,36 @@ const servicios = [
     ],
     prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
   },
+  {
+    id: 4,
+    title: 'Fotografía para obra',
+    description: 'Algunas imágenes nacen ya con destino físico.',
+    image: [
+      '/images/2servicios/obra/1.webp',
+      '/images/2servicios/obra/2.webp'
+    ],
+    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+  },
+  {
+    id: 5,
+    title: 'Fotografía para obra',
+    description: 'Algunas imágenes nacen ya con destino físico.',
+    image: [
+      '/images/2servicios/obra/1.webp',
+      '/images/2servicios/obra/2.webp'
+    ],
+    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+  },
+  {
+    id: 6,
+    title: 'Fotografía para obra',
+    description: 'Algunas imágenes nacen ya con destino físico.',
+    image: [
+      '/images/2servicios/obra/1.webp',
+      '/images/2servicios/obra/2.webp'
+    ],
+    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+  },
 ]
 
 const encargos = [
@@ -133,7 +211,7 @@ const encargos = [
     ],
     prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
   },
-  {
+  { 
     title: 'Sesión fotográfica FOCUS JEB',
     description: 'Imagen esencial como exploración visual, sin finalidad comercial inmediata.',
     image: [
@@ -142,6 +220,33 @@ const encargos = [
       '/images/3encargos/sesionFOCUSJEB/3.webp'
     ],
     prices: { L: 2850, M: 2250, S: 1650, XS: 1250 } 
+  },
+  {
+    title: 'Obra personalizada',
+    description: 'Cada pieza se desarrolla a partir de una idea, una imagen y un espacio concreto.',
+    image: [
+      '/images/3encargos/personalizada/1.webp',
+      '/images/3encargos/personalizada/2.webp'
+    ],
+    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+  },
+  {
+    title: 'Obra personalizada',
+    description: 'Cada pieza se desarrolla a partir de una idea, una imagen y un espacio concreto.',
+    image: [
+      '/images/3encargos/personalizada/1.webp',
+      '/images/3encargos/personalizada/2.webp'
+    ],
+    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+  },
+  {
+    title: 'Obra personalizada',
+    description: 'Cada pieza se desarrolla a partir de una idea, una imagen y un espacio concreto.',
+    image: [
+      '/images/3encargos/personalizada/1.webp',
+      '/images/3encargos/personalizada/2.webp'
+    ],
+    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
   },
   {
     title: 'Obra personalizada',
