@@ -260,14 +260,14 @@ const encargos = [
 ]
 
 const formatosEstandar = [
-  { key: 'XS', label: 'XS', dims: '50×30 cm', ancho: 50, alto: 30, precio5mm: 164.98, precio10mm: 181.92, descripcion: 'Pieza íntima, ideal para espacios reducidos o colecciones.' },
-  { key: 'S',  label: 'S',  dims: '60×40 cm', ancho: 60, alto: 40, precio5mm: 187.82, precio10mm: 219.28, descripcion: 'Equilibrio entre presencia y discreción.' },
-  { key: 'M',  label: 'M',  dims: '80×60 cm', ancho: 80, alto: 60, precio5mm: 226.70, precio10mm: 255.74, descripcion: 'El formato más versátil. Impacto en cualquier espacio.' },
-  { key: 'L',  label: 'L',  dims: '100×70 cm', ancho: 100, alto: 70, precio5mm: 252.94, precio10mm: 298.92, descripcion: 'Presencia máxima. Pensado para paredes protagonistas.' },
+  { key: 'XS', label: 'XS', dims: '50×30 cm', alto: 50, ancho: 30, precio5mm: 164.98, precio10mm: 181.92, descripcion: 'Pieza íntima, ideal para espacios reducidos o colecciones.' },
+  { key: 'S',  label: 'S',  dims: '60×40 cm', alto: 60, ancho: 40, precio5mm: 187.82, precio10mm: 219.28, descripcion: 'Equilibrio entre presencia y discreción.' },
+  { key: 'M',  label: 'M',  dims: '80×60 cm', alto: 80, ancho: 60, precio5mm: 226.70, precio10mm: 255.74, descripcion: 'El formato más versátil. Impacto en cualquier espacio.' },
+  { key: 'L',  label: 'L',  dims: '100×70 cm', alto: 100, ancho: 70, precio5mm: 252.94, precio10mm: 298.92, descripcion: 'Presencia máxima. Pensado para paredes protagonistas.' },
 ]
 
 function calcularPrecioPersonalizado(anchoCm: number, altoCm: number, grosor: '5mm' | '10mm' = '5mm'): number {
-  const areaCm2 = anchoCm * altoCm
+  const areaCm2 = altoCm * anchoCm
   let precioPorCm2: number
   if (areaCm2 <= 1500)      precioPorCm2 = 0.85
   else if (areaCm2 <= 2400) precioPorCm2 = 0.69
@@ -321,23 +321,25 @@ const ConfiguradorPrecios = memo(({
   }, [anchoCm, altoCm, modoConfig, grosorActivo])
 
   // Cuando cambia grosor y ya hay formato activo, recalcular precio
-  useEffect(() => {
-    if (!formatoActivo || !grosorActivo || modoConfig !== 'estandar') return
-    const fmt = formatosEstandar.find(f => f.key === formatoActivo)
-    if (!fmt) return
-    const precio = grosorActivo === '5mm' ? fmt.precio5mm : fmt.precio10mm
-    onFormatoSelect(`Formato ${fmt.label} - ${fmt.dims} · Soporte ${grosorActivo}`, precio)
-  }, [grosorActivo, formatoActivo, modoConfig, onFormatoSelect])
-
-  const handleFormatoEstandar = useCallback((fmt: typeof formatosEstandar[0]) => {
+  const handleFormatoEstandar = useCallback((fmt: typeof formatosEstandar[0], grosorOverride?: '5mm' | '10mm') => {
+    const grosorFinal = grosorOverride ?? grosorActivo ?? '5mm'
     setFormatoActivo(fmt.key)
-    const precio = (grosorActivo ?? '5mm') === '5mm' ? fmt.precio5mm : fmt.precio10mm
-    onFormatoSelect(`Formato ${fmt.label} - ${fmt.dims} · Soporte ${grosorActivo ?? '5mm'}`, precio)
+    const precio = grosorFinal === '5mm' ? fmt.precio5mm : fmt.precio10mm
+    onFormatoSelect(`Formato ${fmt.label} - ${fmt.dims} · Soporte ${grosorFinal}`, precio)
   }, [onFormatoSelect, grosorActivo])
 
   const handleGrosor = useCallback((g: '5mm' | '10mm') => {
     setGrosorActivo(g)
-  }, [])
+    // Si ya hay formato activo, recalculamos el precio inmediatamente
+    // sin depender de useEffect para evitar problemas de referencia
+    if (formatoActivo) {
+      const fmt = formatosEstandar.find(f => f.key === formatoActivo)
+      if (fmt) {
+        const precio = g === '5mm' ? fmt.precio5mm : fmt.precio10mm
+        onFormatoSelect(`Formato ${fmt.label} - ${fmt.dims} · Soporte ${g}`, precio)
+      }
+    }
+  }, [formatoActivo, onFormatoSelect])
 
   const handlePersonalizado = useCallback(() => {
     const label = `Personalizado - ${anchoCm}×${altoCm} cm · Soporte ${grosorActivo ?? '5mm'}`
@@ -450,8 +452,8 @@ const ConfiguradorPrecios = memo(({
                       <div
                         className={`border-2 ${formatoActivo === fmt.key ? 'border-oro bg-oro/20' : 'border-navy/30 group-hover:border-oro/50'} transition-colors rounded-sm`}
                         style={{
-                          width: `${(fmt.ancho / 100) * 32}px`,
-                          height: `${(fmt.alto / 70) * 28}px`,
+                          width: `${(fmt.alto / 100) * 32}px`,
+                          height: `${(fmt.ancho / 70) * 28}px`,
                           minWidth: '12px',
                           minHeight: '10px',
                         }}
