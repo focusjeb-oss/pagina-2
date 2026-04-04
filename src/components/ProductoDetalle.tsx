@@ -11,7 +11,12 @@ export interface ProductoItem {
   subtitle?: string
   description: string
   image: string[]
-  prices: { L: number; M: number; S: number; XS: number }
+  prices: {
+  XS: { '5mm': number; '10mm': number }
+  S:  { '5mm': number; '10mm': number }
+  M:  { '5mm': number; '10mm': number }
+  L:  { '5mm': number; '10mm': number }
+}
   categoria?: string
 }
 
@@ -99,7 +104,7 @@ export default function ProductoDetalle({
   useEffect(() => {
     if (formatoSel && grosorSel && onFormatoYGrosorSelect) {
       const fmtMeta = FORMATOS_META.find(f => f.key === formatoSel)
-      const precio  = producto.prices[formatoSel]
+      const precio = producto.prices[formatoSel][grosorSel]
       const label   = `Formato ${formatoSel} — ${fmtMeta?.dims ?? ''} · Soporte ${grosorSel}`
       onFormatoYGrosorSelect(label, precio, grosorSel)
     }
@@ -108,7 +113,7 @@ export default function ProductoDetalle({
   const categoria = producto.categoria ?? 'Obras'
   const tecnicas  = TECNICAS[categoria] ?? TECNICAS['Obras']
   const fmtMeta   = formatoSel ? FORMATOS_META.find(f => f.key === formatoSel) : null
-  const precio    = formatoSel ? producto.prices[formatoSel] : null
+  const precio = formatoSel && grosorSel ? producto.prices[formatoSel][grosorSel] : null
   const listo     = formatoSel !== null && grosorSel !== null
 
   const buildDescription = () => {
@@ -320,7 +325,7 @@ export default function ProductoDetalle({
               </div>
               <div className="p-4 grid grid-cols-2 gap-3">
                 {FORMATOS_META.map(fmt => {
-                  const precioFmt = producto.prices[fmt.key]
+                  const precioFmt = producto.prices[fmt.key][grosorSel ?? '5mm']
                   const activo = formatoSel === fmt.key
                   return (
                     <button key={fmt.key} type="button" onClick={() => setFormatoSel(fmt.key)}
@@ -374,7 +379,7 @@ export default function ProductoDetalle({
                 <p className="text-3xl font-bold text-navy">
                   {precio !== null
                     ? `${precio.toLocaleString('es-ES')} €`
-                    : `Desde ${producto.prices.XS.toLocaleString('es-ES')} €`}
+                    : `Desde ${producto.prices.XS[grosorSel ?? '5mm'].toLocaleString('es-ES')} €`}
                 </p>
                 <p className="text-xs text-navy/40 mt-0.5">IVA incluido · Envío gratuito</p>
               </div>
@@ -400,7 +405,7 @@ export default function ProductoDetalle({
                 ) : (
                   <><ShoppingCart className="w-5 h-5" />
                     {listo
-                      ? `Añadir al encargo — ${producto.prices[formatoSel!].toLocaleString('es-ES')} €`
+                      ? `Añadir al encargo — ${producto.prices[formatoSel!][grosorSel!].toLocaleString('es-ES')} €`
                       : 'Selecciona formato y grosor primero'}
                   </>
                 )}

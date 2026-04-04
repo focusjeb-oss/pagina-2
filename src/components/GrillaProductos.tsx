@@ -122,7 +122,7 @@ export default function GrillaProductos({
                   <span className="text-[10px] text-navy/40 block">Desde</span>
                   {/* Precio real mínimo del item (XS) */}
                   <span className="text-lg font-bold text-navy leading-tight">
-                    {item.prices.XS.toLocaleString('es-ES')} €
+                    {item.prices.XS['5mm'].toLocaleString('es-ES')} €
                   </span>
                 </div>
                 <button

@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback, memo, useRef } from 'react'
+import { useState, useEffect, useCallback, memo } from 'react'
 import {Menu, X, ArrowRight, Mail, MapPin, Instagram, ChevronRight, Sparkles, Layers, Sun, ShoppingCart, Ruler, CheckCircle, Info, Shield, Package, Truck, CreditCard, Loader2, AlertCircle} from 'lucide-react'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
@@ -51,7 +51,12 @@ const obras = [
       '/images/1obras/limite01/2.webp',
       '/images/1obras/limite01/3.webp',
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    }
   },
   {
     id: 2,
@@ -63,7 +68,12 @@ const obras = [
       '/images/1obras/limite02/2.webp',
       '/images/1obras/limite02/3.webp',
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    }
   },
   {
     id: 3,
@@ -75,7 +85,12 @@ const obras = [
       '/images/1obras/limite03/2.webp',
       '/images/1obras/limite03/3.webp'
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    }
   },
   {
     id: 4,
@@ -86,7 +101,12 @@ const obras = [
       '/images/origen/1.webp',
       '/images/origen/2.webp'
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    }
   },
   {
     id: 5,
@@ -98,7 +118,12 @@ const obras = [
       '/images/1obras/limite03/2.webp',
       '/images/1obras/limite03/3.webp'
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    }
   },
   {
     id: 6,
@@ -110,7 +135,12 @@ const obras = [
       '/images/1obras/limite03/2.webp',
       '/images/1obras/limite03/3.webp'
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    }
   },
   {
     id: 7,
@@ -122,7 +152,12 @@ const obras = [
       '/images/1obras/limite03/2.webp',
       '/images/1obras/limite03/3.webp'
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    }
   },
   {
     id: 8,
@@ -134,7 +169,12 @@ const obras = [
       '/images/1obras/limite03/2.webp',
       '/images/1obras/limite03/3.webp'
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    }
   },
 ]
 
@@ -147,7 +187,12 @@ const servicios = [
       '/images/2servicios/retrato/1.webp',
       '/images/2servicios/retrato/2.webp'
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    }
   },
   {
     id: 2,
@@ -157,7 +202,12 @@ const servicios = [
       '/images/2servicios/editorial/1.webp',
       '/images/2servicios/editorial/2.webp'
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    }
   },
   {
     id: 3,
@@ -167,7 +217,12 @@ const servicios = [
       '/images/2servicios/obra/1.webp',
       '/images/2servicios/obra/2.webp'
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    }
   },
   {
     id: 4,
@@ -177,7 +232,12 @@ const servicios = [
       '/images/2servicios/obra/1.webp',
       '/images/2servicios/obra/2.webp'
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    }
   },
   {
     id: 5,
@@ -187,7 +247,12 @@ const servicios = [
       '/images/2servicios/obra/1.webp',
       '/images/2servicios/obra/2.webp'
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    }
   },
   {
     id: 6,
@@ -197,7 +262,12 @@ const servicios = [
       '/images/2servicios/obra/1.webp',
       '/images/2servicios/obra/2.webp'
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    }
   },
 ]
 
@@ -209,7 +279,12 @@ const encargos = [
       '/images/3encargos/imgcliente/1.webp',
       '/images/3encargos/imgcliente/2.webp'
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    }
   },
   { 
     title: 'Sesión fotográfica FOCUS JEB',
@@ -219,7 +294,12 @@ const encargos = [
       '/images/3encargos/sesionFOCUSJEB/2.webp',
       '/images/3encargos/sesionFOCUSJEB/3.webp'
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 } 
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    } 
   },
   {
     title: 'Obra personalizada',
@@ -228,7 +308,12 @@ const encargos = [
       '/images/3encargos/personalizada/1.webp',
       '/images/3encargos/personalizada/2.webp'
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    }
   },
   {
     title: 'Obra personalizada',
@@ -237,7 +322,12 @@ const encargos = [
       '/images/3encargos/personalizada/1.webp',
       '/images/3encargos/personalizada/2.webp'
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    }
   },
   {
     title: 'Obra personalizada',
@@ -246,7 +336,12 @@ const encargos = [
       '/images/3encargos/personalizada/1.webp',
       '/images/3encargos/personalizada/2.webp'
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    }
   },
   {
     title: 'Obra personalizada',
@@ -255,11 +350,16 @@ const encargos = [
       '/images/3encargos/personalizada/1.webp',
       '/images/3encargos/personalizada/2.webp'
     ],
-    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
+    prices: {
+      XS: { '5mm': 164.98, '10mm': 181.92 },
+      S:  { '5mm': 187.82, '10mm': 219.28 },
+      M:  { '5mm': 226.70, '10mm': 255.74 },
+      L:  { '5mm': 252.94, '10mm': 298.92 },
+    }
   },
 ]
 
-const formatosEstandar = [
+export const formatosEstandar = [
   { key: 'XS', label: 'XS', dims: '50×30 cm', alto: 50, ancho: 30, precio5mm: 164.98, precio10mm: 181.92, descripcion: 'Pieza íntima, ideal para espacios reducidos o colecciones.' },
   { key: 'S',  label: 'S',  dims: '60×40 cm', alto: 60, ancho: 40, precio5mm: 187.82, precio10mm: 219.28, descripcion: 'Equilibrio entre presencia y discreción.' },
   { key: 'M',  label: 'M',  dims: '80×60 cm', alto: 80, ancho: 60, precio5mm: 226.70, precio10mm: 255.74, descripcion: 'El formato más versátil. Impacto en cualquier espacio.' },
@@ -283,86 +383,55 @@ function calcularPrecioPersonalizado(anchoCm: number, altoCm: number, grosor: '5
 // que estaba en la línea 166 del original dentro de este componente.
 // MOTIVO: encargoEnviado es estado del flujo de pago global (App). Este componente
 // nunca lo usaba — era código muerto que generaba confusión.
-const ConfiguradorPrecios = memo(({
+const ConfiguradorPrecios = ({
   onFormatoSelect,
   onGrosorChange,
-  initialFormato,
-  initialGrosor,
+  selectedGrosor,
+  selectedFormat,
 }: {
   onFormatoSelect: (fmt: string, precio: number) => void
   onGrosorChange: (g: '5mm' | '10mm') => void
-  initialFormato?: string | null
-  initialGrosor?: '5mm' | '10mm' | null
+  selectedGrosor: '5mm' | '10mm' | null
+  selectedFormat: string | null
 }) => {
   const [modoConfig, setModoConfig] = useState<'estandar' | 'personalizado'>('estandar')
-  const [formatoActivo, setFormatoActivo] = useState<string | null>(() => {
-    if (!initialFormato) return null
-    const match = initialFormato.match(/Formato\s+(XS|S|M|L)/)
-    return match ? match[1] : null
-  })
-  const [grosorActivo, setGrosorActivo] = useState<'5mm' | '10mm' | null>(initialGrosor ?? null)
   const [anchoCm, setAnchoCm] = useState<number>(60)
   const [altoCm, setAltoCm] = useState<number>(80)
   const [precioPersonalizado, setPrecioPersonalizado] = useState<number>(0)
   const [mostrarDesglose, setMostrarDesglose] = useState(false)
 
-  // ✅ useRef garantiza que los callbacks siempre leen el grosor más reciente
-  // sin depender del ciclo de recreación de useCallback
-  const grosorRef = useRef<'5mm' | '10mm' | null>(initialGrosor ?? null)
-  const formatoActivoRef = useRef<string | null>(null)
-
-  useEffect(() => {
-    if (!initialFormato) return
-    const match = initialFormato.match(/Formato\s+(XS|S|M|L)/)
-    if (match) {
-      setFormatoActivo(match[1])
-      formatoActivoRef.current = match[1]
-    }
-  }, [initialFormato])
-
-  useEffect(() => {
-    if (initialGrosor) {
-      setGrosorActivo(initialGrosor)
-      grosorRef.current = initialGrosor
-    }
-  }, [initialGrosor])
+  // Fuente de verdad única: App. Se deriva del string selectedFormat
+  const formatoActivo = selectedFormat
+    ? (selectedFormat.match(/Formato\s*(XS|S|M|L)/)?.[1] ?? null)
+    : null
 
   useEffect(() => {
     if (modoConfig === 'personalizado') {
-      setPrecioPersonalizado(calcularPrecioPersonalizado(anchoCm, altoCm, grosorRef.current ?? '5mm'))
+      setPrecioPersonalizado(calcularPrecioPersonalizado(anchoCm, altoCm, selectedGrosor ?? '5mm'))
     }
-  }, [anchoCm, altoCm, modoConfig])
+  }, [anchoCm, altoCm, modoConfig, selectedGrosor])
 
-  // ✅ Usa grosorRef.current — siempre lee el valor actual sin closure stale
-  const handleFormatoEstandar = useCallback((fmt: typeof formatosEstandar[0]) => {
-    const grosorFinal = grosorRef.current ?? '5mm'
-    setFormatoActivo(fmt.key)
-    formatoActivoRef.current = fmt.key
+  const handleFormatoEstandar = (fmt: typeof formatosEstandar[0]) => {
+    const grosorFinal = selectedGrosor ?? '5mm'
     const precio = grosorFinal === '5mm' ? fmt.precio5mm : fmt.precio10mm
     onFormatoSelect(`Formato ${fmt.label} - ${fmt.dims} · Soporte ${grosorFinal}`, precio)
-  }, [onFormatoSelect])
+  }
 
-  const handleGrosor = useCallback((g: '5mm' | '10mm') => {
-    // ✅ Actualizar ref PRIMERO — así cualquier callback que se ejecute
-    // después ya lee el valor nuevo aunque el state aún no haya re-renderizado
-    grosorRef.current = g
-    setGrosorActivo(g)
+  const handleGrosor = (g: '5mm' | '10mm') => {
     onGrosorChange(g)
-    // Recalcular precio inmediatamente si ya hay formato seleccionado
-    const fmtKey = formatoActivoRef.current
-    if (fmtKey) {
-      const fmt = formatosEstandar.find(f => f.key === fmtKey)
+    if (formatoActivo) {
+      const fmt = formatosEstandar.find(f => f.key === formatoActivo)
       if (fmt) {
         const precio = g === '5mm' ? fmt.precio5mm : fmt.precio10mm
         onFormatoSelect(`Formato ${fmt.label} - ${fmt.dims} · Soporte ${g}`, precio)
       }
     }
-  }, [onFormatoSelect, onGrosorChange])
+  }
 
-  const handlePersonalizado = useCallback(() => {
-    const label = `Personalizado - ${anchoCm}×${altoCm} cm · Soporte ${grosorRef.current ?? '5mm'}`
+  const handlePersonalizado = () => {
+    const label = `Personalizado - ${anchoCm}×${altoCm} cm · Soporte ${selectedGrosor ?? '5mm'}`
     onFormatoSelect(label, precioPersonalizado)
-  }, [anchoCm, altoCm, precioPersonalizado, onFormatoSelect])
+  }
 
   const areaCm2 = anchoCm * altoCm
   const areaM2 = (areaCm2 / 10000).toFixed(4)
@@ -375,10 +444,10 @@ const ConfiguradorPrecios = memo(({
           <span className="text-sm font-semibold text-navy tracking-wider uppercase">Configurador de formato</span>
         </div>
         <p className="text-xs text-navy/50">Selecciona grosor, tamaño estándar o introduce tus medidas personalizadas</p>
-        {initialFormato && formatoActivo && (
+        {selectedFormat && formatoActivo && (
           <p className="text-xs text-oro font-medium mt-1 flex items-center gap-1.5">
             <CheckCircle className="w-3.5 h-3.5" />
-            Configuración traída desde la ficha: <strong>{formatoActivo} · {grosorActivo ?? '–'}</strong>
+            Configuración traída desde la ficha: <strong>{formatoActivo} · {selectedGrosor ?? '–'}</strong>
           </p>
         )}
       </div>
@@ -394,7 +463,7 @@ const ConfiguradorPrecios = memo(({
             { key: '5mm' as const, label: 'PVC 5 mm', sublabel: 'Ligero · Perfil fino', desc: 'Énfasis en la imagen. Ideal para formatos XS y S.', precio: '164,98 – 252,94 €' },
             { key: '10mm' as const, label: 'PVC 10 mm', sublabel: 'Masa · Profundidad', desc: 'Mayor cimiento visual. Recomendado para M y L.', precio: '181,92 – 298,92 €' },
           ] as const).map(g => {
-            const activo = grosorActivo === g.key
+            const activo = selectedGrosor === g.key
             return (
               <button
                 key={g.key}
@@ -425,7 +494,7 @@ const ConfiguradorPrecios = memo(({
             )
           })}
         </div>
-        {!grosorActivo && (
+        {!selectedGrosor && (
           <p className="text-[11px] text-amber-600 mt-2 text-center">Selecciona el grosor del soporte para ver los precios exactos</p>
         )}
       </div>
@@ -451,8 +520,8 @@ const ConfiguradorPrecios = memo(({
         {modoConfig === 'estandar' ? (
           <div className="space-y-3">
             {formatosEstandar.map((fmt) => {
-              const precioMostrar = grosorActivo
-                ? (grosorActivo === '5mm' ? fmt.precio5mm : fmt.precio10mm)
+              const precioMostrar = selectedGrosor
+                ? (selectedGrosor === '5mm' ? fmt.precio5mm : fmt.precio10mm)
                 : fmt.precio5mm
               return (
                 <button
@@ -485,12 +554,12 @@ const ConfiguradorPrecios = memo(({
                         <span className="text-xs text-navy/40 font-mono">{fmt.dims}</span>
                       </div>
                       <p className="text-xs text-navy/50 mt-0.5 max-w-[220px]">{fmt.descripcion}</p>
-                      {grosorActivo && (
+                      {selectedGrosor && (
                         <div className="flex gap-2 mt-1">
-                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full border ${grosorActivo === '5mm' ? 'bg-oro/20 border-oro text-navy font-semibold' : 'border-navy/20 text-navy/40'}`}>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full border ${selectedGrosor === '5mm' ? 'bg-oro/20 border-oro text-navy font-semibold' : 'border-navy/20 text-navy/40'}`}>
                             5mm {fmt.precio5mm.toLocaleString('es-ES', { minimumFractionDigits: 2 })} €
                           </span>
-                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full border ${grosorActivo === '10mm' ? 'bg-oro/20 border-oro text-navy font-semibold' : 'border-navy/20 text-navy/40'}`}>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full border ${selectedGrosor === '10mm' ? 'bg-oro/20 border-oro text-navy font-semibold' : 'border-navy/20 text-navy/40'}`}>
                             10mm {fmt.precio10mm.toLocaleString('es-ES', { minimumFractionDigits: 2 })} €
                           </span>
                         </div>
@@ -501,7 +570,7 @@ const ConfiguradorPrecios = memo(({
                     <div className={`text-xl font-bold ${formatoActivo === fmt.key ? 'text-navy' : 'text-navy/70'}`}>
                       {precioMostrar.toLocaleString('es-ES', { minimumFractionDigits: 2 })} €
                     </div>
-                    {!grosorActivo && (
+                    {!selectedGrosor && (
                       <span className="text-[10px] text-navy/30">desde</span>
                     )}
                     {formatoActivo === fmt.key && (
@@ -577,7 +646,7 @@ const ConfiguradorPrecios = memo(({
             <div className="rounded-xl border border-oro/20 overflow-hidden">
               <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-oro/5 transition" onClick={() => setMostrarDesglose(!mostrarDesglose)}>
                 <div>
-                  <span className="text-xs text-navy/50 block mb-0.5">Superficie: {areaCm2.toLocaleString('es-ES')} cm² ({areaM2} m²) · Soporte {grosorActivo ?? '5mm'}</span>
+                  <span className="text-xs text-navy/50 block mb-0.5">Superficie: {areaCm2.toLocaleString('es-ES')} cm² ({areaM2} m²) · Soporte {selectedGrosor ?? '5mm'}</span>
                   <span className="text-2xl font-bold text-navy">{precioPersonalizado.toLocaleString('es-ES')} €</span>
                   <span className="text-xs text-navy/40 ml-2">IVA incluido</span>
                 </div>
@@ -621,7 +690,7 @@ const ConfiguradorPrecios = memo(({
       </div>
     </div>
   )
-})
+}
 
 // ─── GALERÍA ──────────────────────────────────────────────────────────────────
 const galleryImages = [
@@ -942,7 +1011,7 @@ function App() {
     }
     const numPiezas = selectedImages.length || 1
     const total = numPiezas * selectedFormatPrice
-    setTotalPrice(Math.round(total))
+    setTotalPrice(Number(total.toFixed(2)))
   }, [selectedImages.length, selectedFormat, selectedFormatPrice])
 
   const scrollToSection = useCallback((sectionId: string) => {
@@ -1544,8 +1613,8 @@ function App() {
                   <ConfiguradorPrecios
                     onFormatoSelect={handleFormatoSelect}
                     onGrosorChange={setSelectedGrosor}
-                    initialFormato={selectedFormat}
-                    initialGrosor={selectedGrosor}
+                    selectedGrosor={selectedGrosor}
+                    selectedFormat={selectedFormat}
                   />
 
                   {selectedFormat && cartCount > 0 && (
