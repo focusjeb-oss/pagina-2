@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback, memo } from 'react'
+import { useState, useEffect, useCallback, memo, useRef } from 'react'
 import {Menu, X, ArrowRight, Mail, MapPin, Instagram, ChevronRight, Sparkles, Layers, Sun, ShoppingCart, Ruler, CheckCircle, Info, Shield, Package, Truck, CreditCard, Loader2, AlertCircle} from 'lucide-react'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
@@ -51,7 +51,7 @@ const obras = [
       '/images/1obras/limite01/2.webp',
       '/images/1obras/limite01/3.webp',
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
   },
   {
     id: 2,
@@ -63,7 +63,7 @@ const obras = [
       '/images/1obras/limite02/2.webp',
       '/images/1obras/limite02/3.webp',
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
   },
   {
     id: 3,
@@ -75,7 +75,7 @@ const obras = [
       '/images/1obras/limite03/2.webp',
       '/images/1obras/limite03/3.webp'
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
   },
   {
     id: 4,
@@ -86,7 +86,7 @@ const obras = [
       '/images/origen/1.webp',
       '/images/origen/2.webp'
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
   },
   {
     id: 5,
@@ -98,7 +98,7 @@ const obras = [
       '/images/1obras/limite03/2.webp',
       '/images/1obras/limite03/3.webp'
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
   },
   {
     id: 6,
@@ -110,7 +110,7 @@ const obras = [
       '/images/1obras/limite03/2.webp',
       '/images/1obras/limite03/3.webp'
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
   },
   {
     id: 7,
@@ -122,7 +122,7 @@ const obras = [
       '/images/1obras/limite03/2.webp',
       '/images/1obras/limite03/3.webp'
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
   },
   {
     id: 8,
@@ -134,7 +134,7 @@ const obras = [
       '/images/1obras/limite03/2.webp',
       '/images/1obras/limite03/3.webp'
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
   },
 ]
 
@@ -147,7 +147,7 @@ const servicios = [
       '/images/2servicios/retrato/1.webp',
       '/images/2servicios/retrato/2.webp'
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
   },
   {
     id: 2,
@@ -157,7 +157,7 @@ const servicios = [
       '/images/2servicios/editorial/1.webp',
       '/images/2servicios/editorial/2.webp'
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
   },
   {
     id: 3,
@@ -167,7 +167,7 @@ const servicios = [
       '/images/2servicios/obra/1.webp',
       '/images/2servicios/obra/2.webp'
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
   },
   {
     id: 4,
@@ -177,7 +177,7 @@ const servicios = [
       '/images/2servicios/obra/1.webp',
       '/images/2servicios/obra/2.webp'
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
   },
   {
     id: 5,
@@ -187,7 +187,7 @@ const servicios = [
       '/images/2servicios/obra/1.webp',
       '/images/2servicios/obra/2.webp'
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
   },
   {
     id: 6,
@@ -197,7 +197,7 @@ const servicios = [
       '/images/2servicios/obra/1.webp',
       '/images/2servicios/obra/2.webp'
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
   },
 ]
 
@@ -209,7 +209,7 @@ const encargos = [
       '/images/3encargos/imgcliente/1.webp',
       '/images/3encargos/imgcliente/2.webp'
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
   },
   { 
     title: 'Sesión fotográfica FOCUS JEB',
@@ -219,7 +219,7 @@ const encargos = [
       '/images/3encargos/sesionFOCUSJEB/2.webp',
       '/images/3encargos/sesionFOCUSJEB/3.webp'
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 } 
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 } 
   },
   {
     title: 'Obra personalizada',
@@ -228,7 +228,7 @@ const encargos = [
       '/images/3encargos/personalizada/1.webp',
       '/images/3encargos/personalizada/2.webp'
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
   },
   {
     title: 'Obra personalizada',
@@ -237,7 +237,7 @@ const encargos = [
       '/images/3encargos/personalizada/1.webp',
       '/images/3encargos/personalizada/2.webp'
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
   },
   {
     title: 'Obra personalizada',
@@ -246,7 +246,7 @@ const encargos = [
       '/images/3encargos/personalizada/1.webp',
       '/images/3encargos/personalizada/2.webp'
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
   },
   {
     title: 'Obra personalizada',
@@ -255,7 +255,7 @@ const encargos = [
       '/images/3encargos/personalizada/1.webp',
       '/images/3encargos/personalizada/2.webp'
     ],
-    prices: { L: 2850, M: 2250, S: 1650, XS: 1250 }
+    prices: { L: 252.94, M: 226.70, S: 187.82, XS: 164.98 }
   },
 ]
 
@@ -285,10 +285,12 @@ function calcularPrecioPersonalizado(anchoCm: number, altoCm: number, grosor: '5
 // nunca lo usaba — era código muerto que generaba confusión.
 const ConfiguradorPrecios = memo(({
   onFormatoSelect,
+  onGrosorChange,
   initialFormato,
   initialGrosor,
 }: {
   onFormatoSelect: (fmt: string, precio: number) => void
+  onGrosorChange: (g: '5mm' | '10mm') => void
   initialFormato?: string | null
   initialGrosor?: '5mm' | '10mm' | null
 }) => {
@@ -299,52 +301,68 @@ const ConfiguradorPrecios = memo(({
     return match ? match[1] : null
   })
   const [grosorActivo, setGrosorActivo] = useState<'5mm' | '10mm' | null>(initialGrosor ?? null)
-  const [anchoCm, setAnchoCm] = useState<number>(80)
-  const [altoCm, setAltoCm] = useState<number>(60)
+  const [anchoCm, setAnchoCm] = useState<number>(60)
+  const [altoCm, setAltoCm] = useState<number>(80)
   const [precioPersonalizado, setPrecioPersonalizado] = useState<number>(0)
   const [mostrarDesglose, setMostrarDesglose] = useState(false)
+
+  // ✅ useRef garantiza que los callbacks siempre leen el grosor más reciente
+  // sin depender del ciclo de recreación de useCallback
+  const grosorRef = useRef<'5mm' | '10mm' | null>(initialGrosor ?? null)
+  const formatoActivoRef = useRef<string | null>(null)
 
   useEffect(() => {
     if (!initialFormato) return
     const match = initialFormato.match(/Formato\s+(XS|S|M|L)/)
-    if (match) setFormatoActivo(match[1])
+    if (match) {
+      setFormatoActivo(match[1])
+      formatoActivoRef.current = match[1]
+    }
   }, [initialFormato])
 
   useEffect(() => {
-    if (initialGrosor) setGrosorActivo(initialGrosor)
+    if (initialGrosor) {
+      setGrosorActivo(initialGrosor)
+      grosorRef.current = initialGrosor
+    }
   }, [initialGrosor])
 
   useEffect(() => {
     if (modoConfig === 'personalizado') {
-      setPrecioPersonalizado(calcularPrecioPersonalizado(anchoCm, altoCm, grosorActivo ?? '5mm'))
+      setPrecioPersonalizado(calcularPrecioPersonalizado(anchoCm, altoCm, grosorRef.current ?? '5mm'))
     }
-  }, [anchoCm, altoCm, modoConfig, grosorActivo])
+  }, [anchoCm, altoCm, modoConfig])
 
-  // Cuando cambia grosor y ya hay formato activo, recalcular precio
-  const handleFormatoEstandar = useCallback((fmt: typeof formatosEstandar[0], grosorOverride?: '5mm' | '10mm') => {
-    const grosorFinal = grosorOverride ?? grosorActivo ?? '5mm'
+  // ✅ Usa grosorRef.current — siempre lee el valor actual sin closure stale
+  const handleFormatoEstandar = useCallback((fmt: typeof formatosEstandar[0]) => {
+    const grosorFinal = grosorRef.current ?? '5mm'
     setFormatoActivo(fmt.key)
+    formatoActivoRef.current = fmt.key
     const precio = grosorFinal === '5mm' ? fmt.precio5mm : fmt.precio10mm
     onFormatoSelect(`Formato ${fmt.label} - ${fmt.dims} · Soporte ${grosorFinal}`, precio)
-  }, [onFormatoSelect, grosorActivo])
+  }, [onFormatoSelect])
 
   const handleGrosor = useCallback((g: '5mm' | '10mm') => {
+    // ✅ Actualizar ref PRIMERO — así cualquier callback que se ejecute
+    // después ya lee el valor nuevo aunque el state aún no haya re-renderizado
+    grosorRef.current = g
     setGrosorActivo(g)
-    // Si ya hay formato activo, recalculamos el precio inmediatamente
-    // sin depender de useEffect para evitar problemas de referencia
-    if (formatoActivo) {
-      const fmt = formatosEstandar.find(f => f.key === formatoActivo)
+    onGrosorChange(g)
+    // Recalcular precio inmediatamente si ya hay formato seleccionado
+    const fmtKey = formatoActivoRef.current
+    if (fmtKey) {
+      const fmt = formatosEstandar.find(f => f.key === fmtKey)
       if (fmt) {
         const precio = g === '5mm' ? fmt.precio5mm : fmt.precio10mm
         onFormatoSelect(`Formato ${fmt.label} - ${fmt.dims} · Soporte ${g}`, precio)
       }
     }
-  }, [formatoActivo, onFormatoSelect])
+  }, [onFormatoSelect, onGrosorChange])
 
   const handlePersonalizado = useCallback(() => {
-    const label = `Personalizado - ${anchoCm}×${altoCm} cm · Soporte ${grosorActivo ?? '5mm'}`
+    const label = `Personalizado - ${anchoCm}×${altoCm} cm · Soporte ${grosorRef.current ?? '5mm'}`
     onFormatoSelect(label, precioPersonalizado)
-  }, [anchoCm, altoCm, precioPersonalizado, onFormatoSelect, grosorActivo])
+  }, [anchoCm, altoCm, precioPersonalizado, onFormatoSelect])
 
   const areaCm2 = anchoCm * altoCm
   const areaM2 = (areaCm2 / 10000).toFixed(4)
@@ -1525,6 +1543,7 @@ function App() {
 
                   <ConfiguradorPrecios
                     onFormatoSelect={handleFormatoSelect}
+                    onGrosorChange={setSelectedGrosor}
                     initialFormato={selectedFormat}
                     initialGrosor={selectedGrosor}
                   />
@@ -1533,7 +1552,7 @@ function App() {
                     <div className="rounded-2xl border border-oro/30 bg-gradient-to-r from-navy/5 to-oro/5 p-5">
                       <div className="flex justify-between items-baseline mb-1">
                         <span className="text-navy/60 text-sm">
-                          {cartCount} pieza{cartCount !== 1 ? 's' : ''} × {selectedFormatPrice.toLocaleString('es-ES')} €
+                          {cartCount} pieza{cartCount !== 1 ? 's' : ''} × {selectedFormatPrice.toLocaleString('es-ES', { minimumFractionDigits: 2 })} €
                         </span>
                         <span className="text-3xl font-bold text-navy">{totalPrice.toLocaleString('es-ES')} €</span>
                       </div>
